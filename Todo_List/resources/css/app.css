@@ -1,0 +1,163 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '@vueform/multiselect/themes/default.css';
+
+.action_icon {
+    cursor: pointer;
+}
+
+.icon_right_text_margin {
+    margin-right: 3px;
+}
+
+.form_processing {
+    align-self: center;
+    align-items: center;
+    background-image: url(/images/big_loading.gif);
+    background-repeat: no-repeat;
+    background-size: 30px 30px;
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    margin-left: 8px;
+    padding: 0;
+}
+
+.right_btn_from_left_margin {
+    margin-left: 30px !important;
+}
+
+.editor_listing_table {
+    @apply w-full bg-transparent border-collapse;
+}
+
+.editor_listing_table tbody tr:nth-child(odd) {
+    /*@apply admin_main_color;*/
+    /*background-color: !important;*/
+    @apply py-2;
+}
+
+
+.editor_listing_table tr:nth-child(even) {
+    @apply bg-gray-200 py-2;
+}
+
+.editor_listing_table_header {
+    /*--tw-border-opacity: 1;*/
+    /*border-color: rgba(209, 213, 219, var(--tw-border-opacity));*/
+    /*border-top-width: 1px;*/
+    /*border-bottom-width: 1px;*/
+    /*--tw-bg-opacity: 1;*/
+    /*background-color: #c7c7c7;*/
+    @apply border-gray-300        ;
+
+    @apply bg-gray-300 border-b border-t;
+
+}
+
+input[type="text"]:disabled {
+    background-color: #b1c3d9 !important;
+    color: #4f5761 !important;
+}
+
+.active_tab {
+    @apply font-bold;
+}
+/* PAGINATION BLOCK START */
+
+   .pagination {
+       width: 100%;
+       display: flex;
+       justify-content: flex-start !important;
+       margin: 5px;
+       padding: 5px;
+       max-width: 1280px;
+       @apply border-b border-t;
+   }
+
+.pagination li {
+    list-style: none;
+    padding: 5px;
+    /*border:2px dotted red;*/
+}
+
+.page-link {
+    cursor: pointer;
+}
+
+.active {
+    @apply font-bold;
+}
+
+ /*PAGINATION BLOCK END*/
+
+ /*ADMIN BLOCK START*/
+.admin_listing_modal_content_editor_form {
+    margin-top: 0.7rem;
+    flex: 1; /* same as flex: 1 1 auto; */
+    background-color:#fff !important;
+
+}
+
+.admin_listing_modal_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.admin_listing_modal_content {
+    position: relative;
+    width: 70%;
+
+    margin-left: 4px;
+    min-height: 360px;
+    /*max-height: 360px;*/
+    padding: 10px;
+    overflow: auto;
+    border: 1px solid #ced4da !important;
+    border-radius: 0.25rem !important;
+    box-shadow: inset 0 0 0 transparent !important;
+    /*border: 2px dotted yellow !important;*/
+
+
+    /*height: 100%;*/
+    /*//////////*/
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-start; /* align items in Main Axis */
+    align-items: stretch; /* align items in Cross Axis */
+    align-content: stretch; /* Extra space in Cross Axis */
+
+    /*background: rgba(255, 255, 255, .1);*/
+    background-color:#fff !important;
+
+}
+.admin_listing_modal_header {
+    background-color: #fff;
+    color: #000000;
+    /*border-bottom: 2px solid rgba(123,123,123);*/
+    border-bottom: 1px solid red;
+    /*padding: 0;*/
+    padding: 0.5rem 0.5rem;
+    margin: 0;
+    position: relative;
+
+}
+
+.multiselect-search {
+    background-color: #fff;
+    color: #000000;
+}
+
+.multiselect-option {
+    background-color: #fff;
+    color: #000000;
+}
+
+.admin_multiselect_lte {
+    background-color: #fff;
+    color: #000000;
+}
+
+ /*ADMIN BLOCK END*/

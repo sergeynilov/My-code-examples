@@ -1,0 +1,34 @@
+<?php
+/**
+ * Model generated with custom stubs file generator.
+ *
+ * Version 0.9
+ */
+
+namespace {{ namespacePath }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+{{ useDeclarations }}
+
+class {{ ucFirstClass }} extends Model
+{
+    {{ traitDeclarations }}
+    use HasFactory;
+
+    protected $table = '{{ snakePlural }}';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
+    protected $casts = [
+        {{ castingFields }}
+    ];
+
+    protected $fillable = [ {{ fillableFields }} ];
+
+    {{ additiveMethods }}
+
+    {{ relationsCode }}
+
+}

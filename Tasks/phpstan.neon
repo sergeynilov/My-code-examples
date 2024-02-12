@@ -1,0 +1,14 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    universalObjectCratesClasses:
+        - Illuminate\Http\Resources\Json\JsonResource
+        - \PhpOffice\PhpWord\Style\Table
+        - \PhpOffice\PhpWord\IOFactory
+    paths:
+        - app/
+
+    # Level 9 is the highest level
+    # https://phpstan.org/user-guide/rule-levels
+    level: 5

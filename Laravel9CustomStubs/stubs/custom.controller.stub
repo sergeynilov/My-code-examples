@@ -1,0 +1,280 @@
+<?php
+/**
+ * Controller generated with custom stubs file generator.
+ *
+ * Version 0.9
+ */
+
+namespace {{ namespacePath}};
+
+use App\Http\Requests\Create{{ ucFirstClass }}Request;
+use App\Http\Requests\Update{{ ucFirstClass }}Request;
+use App\Http\Resources\{{ ucFirstClass }}Resource;
+use App\Library\AppCustomException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use App\Repositories\{{ ucFirstClass }}CrudRepository;
+use DB;
+
+// {{ uppercaseClass }} BLOCK STARTED
+
+
+class {{ ucFirstClass }}Controller extends Controller
+{
+
+    protected ${{ camelCaseClass }}CrudRepository;
+    // SHOW_DB_TRANSACTION_VAR_DECLARE_START
+    protected $dbTransaction;
+    // SHOW_DB_TRANSACTION_VAR_DECLARE_END
+
+    public function __construct({{ ucFirstClass }}CrudRepository ${{ camelCaseClass }}CrudRepository // SHOW_DB_TRANSACTION_CLASS_INJECTION_START, DBTransactionInterface $dbTransaction // SHOW_DB_TRANSACTION_CLASS_INJECTION_END)
+    {
+        $this->{{ camelCaseClass         }}CrudRepository = ${{ camelCaseClass }}CrudRepository;
+    // SHOW_DB_TRANSACTION_VAR_DECLARE_START
+        $this->dbTransaction = $dbTransaction;
+    // SHOW_DB_TRANSACTION_VAR_DECLARE_END
+    }
+
+
+    /**
+     * Returns (filtered) paginated collection of {{ pluralCamelCaseClass }}
+     *
+     * param in POST request : int $page - paginated page, if empty - all data would be returned
+     *
+     * param in POST request : string $sortedBy - how data are sorted, can be combination of fields
+     *
+     * param in POST request : array $filters - how data are filtered, keys : name - string
+     *
+     * returns filtered data / total rows number / pagination per page
+     *
+     * @return JsonResponse : posts - collection of found data,
+     * totalPostsCount - total number of found posts,
+     * perPage - number of rows in 1 paginated page
+     */
+    public function filter()
+    {
+        $this->authorize('viewAny', {{ ucFirstClass }}::class);
+        $request = request();
+        // SHOW_LOG_INFO_START
+        \Log::info( '-1 filter $request->all()::' . print_r( $request->all(), true  ) );
+        // SHOW_LOG_INFO_END
+
+        try {
+            ${{ pluralCamelCaseClass }}Data = $this->{{ camelCaseClass }}CrudRepository->filter(
+                page: $request->page ?? 1,
+                filters: $request->only('page', 'search'),
+                sortedBy: $request->sorted_by ?? '',
+            );
+            return response()->json([
+                '{{ pluralCamelCaseClass }}' => ${{ pluralCamelCaseClass }}Data['{{ pluralCamelCaseClass }}'],
+                'total{{ pluralUcFirstClass }}Count' => ${{ pluralCamelCaseClass }}Data['total{{ pluralUcFirstClass }}Count'],
+                'perPage' => ${{ pluralCamelCaseClass }}Data['perPage'],
+            ], JsonResponse::HTTP_OK); // 200
+        } catch (\Error | \Exception $e) {
+            AppCustomException::getInstance()::raiseChannelError(
+                errorMsg: $e->getMessage(),
+                exceptionClass: \Exception::class,
+                file: __FILE__,
+                line: __LINE__
+            );
+
+            return response()->json([
+                'error_message' => $e->getMessage(),
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+
+    /**
+     * Get an individual {{ ucFirstClass }} model by id
+     *
+     * @param int $id
+     */
+    public function show(int $id)
+    {
+        ${{ camelCaseClass }} = $this->{{ camelCaseClass }}CrudRepository->read(id: $id);
+        // SHOW_LOG_INFO_START
+        \Log::info(varDump(${{ camelCaseClass }}, ' -1 show ${{ camelCaseClass }}::'));
+        // SHOW_LOG_INFO_END
+        return response()->json(['{{ camelCaseClass }}' => (new {{ ucFirstClass }}Resource(${{ camelCaseClass }}))], JsonResponse::HTTP_OK); // 200
+    }
+
+    /**
+     * Validate and on success to store new {{ camelCaseClass }} in storage.
+     *
+     */
+    public function store(Create{{ ucFirstClass }}Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            // SHOW_LOG_INFO_START
+            \Log::info(' -1 BEFORE Create{{ ucFirstClass }}Request::');
+            // SHOW_LOG_INFO_END
+            ${{ camelCaseClass }} = $this->{{ camelCaseClass }}CrudRepository->store(data: $request->only('name'));
+            // SHOW_LOG_INFO_START
+            \Log::info(varDump(${{ camelCaseClass }}, ' -1 store ${{ camelCaseClass }}::'));
+            // SHOW_LOG_INFO_END
+            DB::commit();
+
+            return response()->json(['{{ camelCaseClass }}' => (new {{ ucFirstClass }}Resource(${{ camelCaseClass }}))], JsonResponse::HTTP_CREATED); // 201
+        } catch (\Error | \Exception $e) {
+            AppCustomException::getInstance()::raiseChannelError(
+                errorMsg: $e->getMessage(),
+                exceptionClass: \Exception::class,
+                file: __FILE__,
+                line: __LINE__
+            );
+            DB::rollback();
+
+            return response()->json([
+                'error_message' => $e->getMessage(),
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+
+    public function update(Update{{ ucFirstClass }}Request $request, int ${{ camelCaseClass }}Id)
+    {
+        try {
+            DB::beginTransaction();
+            // SHOW_LOG_INFO_START
+            \Log::info(' -1 BEFORE Update{{ ucFirstClass }}Request::');
+            // SHOW_LOG_INFO_END
+            ${{ camelCaseClass }} = $this->{{ camelCaseClass }}CrudRepository->update(id: ${{ camelCaseClass }}Id, data: $request->only('name'));
+            // SHOW_LOG_INFO_START
+            \Log::info(varDump(${{ camelCaseClass }}, ' -1 update ${{ camelCaseClass }}::'));
+            // SHOW_LOG_INFO_END
+            DB::commit();
+
+            return response()->json(['{{ camelCaseClass }}' => (new {{ ucFirstClass }}Resource(${{ camelCaseClass }}))], JsonResponse::HTTP_RESET_CONTENT); // 205
+        } catch (ModelNotFoundException $e) {
+            DB::rollback();
+            throw new ModelNotFoundException($e->getMessage(), JsonResponse::HTTP_NOT_FOUND);
+        } catch (\Error | \Exception $e) {
+            AppCustomException::getInstance()::raiseChannelError(
+                errorMsg: $e->getMessage(),
+                exceptionClass: \Exception::class,
+                file: __FILE__,
+                line: __LINE__
+            );
+            DB::rollback();
+
+            return response()->json([
+                'error_message' => $e->getMessage(),
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+
+    // SHOW_DONE_BLOCK_START
+    /**
+     * Set status DONE to the specified {{ ucFirstClass }} model
+     *
+     * @param int $id
+     *
+     * @return {{ ucFirstClass }}
+     */
+    public function done(int $id): {{ ucFirstClass }}
+    {
+        ${{ camelCaseClass }} = {{ ucFirstClass }}::findOrFail($id);
+        // SHOW_LOG_INFO_START
+        \Log::info(varDump(${{ camelCaseClass }}, ' -1 done ${{ camelCaseClass }}::'));
+        // SHOW_LOG_INFO_END
+        ${{ camelCaseClass }}->update([
+            'status' => {{ ucFirstClass }}Status::DONE->value,
+            'completed_at' => Carbon::now(config('app.timezone')),
+        ]);
+
+        return ${{ camelCaseClass }};
+    }
+
+    /**
+     * Set status UNDONE to the specified {{ ucFirstClass }} model
+     *
+     * @param int $id
+     *
+     * @return {{ ucFirstClass }}
+     */
+    public function undone(int $id): {{ ucFirstClass }}
+    {
+        ${{ camelCaseClass }} = {{ ucFirstClass }}::findOrFail($id);
+        // SHOW_LOG_INFO_START
+        \Log::info(varDump(${{ camelCaseClass }}, ' -1 undone ${{ camelCaseClass }}::'));
+        // SHOW_LOG_INFO_END
+        ${{ camelCaseClass }}->update([
+            'status' => {{ ucFirstClass }}Status::UNDONE->value,
+            'completed_at' => Carbon::now(config('app.timezone')),
+        ]);
+
+        return ${{ camelCaseClass }};
+    }
+    // SHOW_DONE_BLOCK_END
+
+    /**
+     * Remove the specified {{ ucFirstClass }} model from storage.
+     *
+     * @param int ${{ camelCaseClass }}Id
+     *
+     */
+    public function destroy(int ${{ camelCaseClass }}Id)
+    {
+        try {
+            DB::beginTransaction();
+            // SHOW_LOG_INFO_START
+            \Log::info(varDump(${{ camelCaseClass }}Id, ' -1 destroy ${{ camelCaseClass }}Id::'));
+            $this->{{ camelCaseClass }}CrudRepository->delete(id: ${{ camelCaseClass }}Id);
+            // SHOW_LOG_INFO_END
+            DB::commit();
+        } catch (ModelNotFoundException $e) {
+            DB::rollback();
+            throw new ModelNotFoundException($e->getMessage(), JsonResponse::HTTP_NOT_FOUND);
+        } catch (\Error | \Exception $e) {
+            AppCustomException::getInstance()::raiseChannelError(
+                errorMsg: $e->getMessage(),
+                exceptionClass: \Exception::class,
+                file: __FILE__,
+                line: __LINE__
+            );
+            DB::rollback();
+
+            return response()->json([
+                'error_message' => $e->getMessage(),
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR); // 500
+        }
+        return response()->noContent();
+    }
+
+    /**
+     * Restore priorly trashed specified {{ ucFirstClass }} model in storage.
+     *
+     * @param int ${{ camelCaseClass }}Id
+     */
+    public function restore(int ${{ camelCaseClass }}Id)
+    {
+        try {
+            DB::beginTransaction();
+            ${{ camelCaseClass }} = $this->{{ camelCaseClass }}CrudRepository->restore(id: ${{ camelCaseClass }}Id);
+            DB::commit();
+            // SHOW_LOG_INFO_START
+            \Log::info(varDump(${{ camelCaseClass }}, ' -1 restore ${{ camelCaseClass }}::'));
+            // SHOW_LOG_INFO_END
+            return response()->json(['{{ camelCaseClass }}' => (new {{ ucFirstClass }}Resource(${{ camelCaseClass }}))], JsonResponse::HTTP_RESET_CONTENT); // 205
+        } catch (ModelNotFoundException $e) {
+            DB::rollback();
+            throw new ModelNotFoundException($e->getMessage(), JsonResponse::HTTP_NOT_FOUND);
+        } catch (\Error | \Exception $e) {
+            AppCustomException::getInstance()::raiseChannelError(
+                errorMsg: $e->getMessage(),
+                exceptionClass: \Exception::class,
+                file: __FILE__,
+                line: __LINE__
+            );
+            DB::rollback();
+
+            return response()->json([
+                'error_message' => $e->getMessage(),
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR); // 500
+        }
+
+//        return $this->{{ camelCaseClass }}CrudRepository->restore(id: ${{ camelCaseClass }}Id);
+    }
+}
+
+// {{ uppercaseClass }} BLOCK END

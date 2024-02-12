@@ -1,0 +1,45 @@
+  FROM php:8.2.3-apache
+    RUN apt-get update && \
+    apt-get install --assume-yes --no-install-recommends --quiet \
+    libfreetype6-dev \
+    libwebp-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    nano \
+    mc \
+    git-core \
+    libmagickwand-dev \
+    curl \
+    build-essential \
+    libnotify-bin \
+    openssl \
+    libssl-dev \
+    libgmp-dev \
+    libldap2-dev \
+    netcat \
+    locate
+
+  RUN pecl install imagick \
+    && docker-php-ext-enable imagick
+
+  RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp  --with-jpeg
+
+  RUN docker-php-ext-install gd
+
+
+
+    RUN apt-get install -y zlib1g-dev libicu-dev g++ \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+
+
+    RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+    RUN  docker-php-ext-install pdo pdo_mysql zip gmp bcmath pcntl ldap sysvmsg exif  \
+    && a2enmod rewrite
+
+    RUN apt-get install -y grep mlocate
+
+    COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf

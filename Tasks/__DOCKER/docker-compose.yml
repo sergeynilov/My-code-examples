@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+
+    web:
+        container_name: Tasks_web
+
+        build:
+            context: ./web
+            dockerfile: Dockerfile.yml
+
+        environment:
+            - APACHE_RUN_USER=www-data
+        volumes:
+            - ${APP_PATH_HOST}:${APP_PTH_CONTAINER}
+        ports:
+            - 8088:80
+        working_dir: ${APP_PTH_CONTAINER}
+
+
+    mysql_db:
+        container_name: MySqlTasks_db
+        image: mysql:8.0.21
+        ports:
+            - "3306:3306"
+        restart: always
+        environment:
+            - MYSQL_DATABASE=DockerTasks
+            - MYSQL_USER=docker_user
+            - MYSQL_PASSWORD=4321
+            - MYSQL_ALLOW_EMPTY_PASSWORD=false
+            - MYSQL_ROOT_PASSWORD=321
+            - TZ=Europe/Kiev
+
+        volumes:
+            - ${DB_PATH_HOST}:/var/lib/mysql
+
+    mysql_adminer:
+        container_name: MysqlTasks_adminer
+        image: adminer
+        restart: always
+        ports:
+            - 8089:8080
+        links:
+            - mysql_db
+
+
+    composer:
+        container_name: Tasks_composer
+        image: composer:2.4
+        volumes:
+            - ${APP_PATH_HOST}:${APP_PTH_CONTAINER}
+        working_dir: ${APP_PTH_CONTAINER}
+        command: composer install --ignore-platform-reqs
